@@ -35,7 +35,7 @@ if (!defined('CWA\DB\HOST')) {
 	define('CWA\DB\HOST', 'localhost');
 }
 if (!defined('CWA\DB\BACKUP_COMMAND')) {
-	define('CWA\DB\BACKUP_COMMAND', '/usr/local/bin/mysqldump --single-transaction --skip-extended-insert -u ' . \CWA\DB\USERNAME . ' --password=' . \CWA\DB\PASSWORD . ' ' . \CWA\DB\DBNAME);
+	define('CWA\DB\BACKUP_COMMAND', '/usr/local/bin/mysqldump --single-transaction --skip-extended-insert -u ' . \CWA\DB\USERNAME . ' --password=\'' . \CWA\DB\PASSWORD . '\' ' . \CWA\DB\DBNAME);
 }
 if (!defined('CWA\DB\DSN')) {
 	define('CWA\DB\DSN', \CWA\DB\DBTYPE . ':host=' . \CWA\DB\HOST . ';dbname=' . \CWA\DB\DBNAME);
