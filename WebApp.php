@@ -141,6 +141,7 @@ abstract class WebApp
 		// steals the session cookie from a valid user, this can be used to validate that the
 		// session is only accessed from the correct location by the correct browser. -- cwells
 		if (isset($_SESSION['CWA_browserFingerprint']) && $_SESSION['CWA_browserFingerprint'] !== $this->getBrowserFingerprint()) {
+			$this->logger->warn('Browser fingerprint mismatch.');
 			$this->recreateSession(); // No longer logged in. -- cwells
 		}
 
@@ -151,6 +152,7 @@ abstract class WebApp
 		if (isset($_SESSION['CWA_syncToken']) && count($_POST) !== 0) {
 			$token = $_SESSION['CWA_syncToken'];
 			if (!isset($_POST[$token['name']]) || $_POST[$token['name']] !== $token['value']) {
+				$this->logger->warn('Invalid CSRF synchronizer token.');
 				$this->recreateSession();
 				$this->redirect($this->loginURL); // Prevent a POST URL from being set as the returnURL. -- cwells
 			} else {
