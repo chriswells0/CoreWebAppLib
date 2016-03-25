@@ -89,6 +89,7 @@ abstract class Controller
 
 	protected function loadView($method, $layout = 'default') {
 		$this->view = new View($this->modelType, $this->getTemplate($method), $layout);
+		$this->view->setData('ModelType', $this->modelType);
 		$this->updateMetaInfo($method);
 	}
 
