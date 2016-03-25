@@ -190,7 +190,24 @@ abstract class DatabaseRecordController extends Controller
 		} else {
 			$itemID = $data['itemID'];
 			if ($this->db->delete($this->modelType, $itemID)) {
-				$this->app->redirect("$this->pathInURL/admin");
+				if (empty($_SERVER['HTTP_REFERER']) || strpos($_SERVER['HTTP_REFERER'], "$this->pathInURL/view") !== false) {
+					// No referrer or the referrer was the item being deleted, so the next URL is a list of similar items. -- cwells
+					if ($this->app->userIsAuthorized(null, 'admin')) {
+						$nextURL = "$this->pathInURL/admin";
+					} else {
+						$nextURL = $this->pathInURL;
+					}
+				} else { // This is typically a page that had this item as a sub-item. -- cwells
+					$nextURL = $_SERVER['HTTP_REFERER'];
+				}
+
+				$this->loadView('add'); // Get a simple view with no item loaded. -- cwells
+				if ($this->view->getFormat() === 'html') {
+					$this->app->redirect($nextURL);
+				} else {
+					$this->view->setStatus('Successfully deleted the specified item.');
+					$this->view->setData('NextURL', $nextURL);
+				}
 			} else {
 				$this->view($itemID);
 				$errorInfo = $this->db->getErrorInfo();
