@@ -112,6 +112,18 @@ abstract class Controller
 	public function __showView() {
 		$this->view->setData('ControllerURL', $this->pathInURL);
 		$this->view->setData('CurrentUser', $this->app->getCurrentUser());
+		if ($this->view->getFormat() === 'atom') {
+			$items = $this->view->getData($this->modelType . 'List');
+			if (!is_null($items)) {
+				$lastUpdated = null;
+				$field = $items[0]->getUpdatedFieldName();
+				foreach ($items as $item) { // Use the timestamp of the most recently updated item. -- cwells
+					if ($item->$field > $lastUpdated) $lastUpdated = $item->$field;
+				}
+				$lastUpdated = new \DateTime($lastUpdated);
+				$this->view->setData('LastUpdated', $lastUpdated);
+			}
+		}
 		$this->view->show();
 	}
 
