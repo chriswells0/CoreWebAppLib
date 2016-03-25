@@ -120,8 +120,7 @@ abstract class DatabaseRecordController extends Controller
 			$morePages = true;
 			unset($items[$this->indexLimit]);
 		}
-		$this->view->setData(array('Items' => $items,
-									$this->modelType . 'List' => $items,
+		$this->view->setData(array($this->modelType . 'List' => $items,
 									'BackURL' => '',
 									'NextURL' => (empty($morePages) ? '' : "$this->pathInURL/page/2")));
 	}
@@ -172,8 +171,7 @@ abstract class DatabaseRecordController extends Controller
 			$morePages = true;
 			unset($items[$this->adminLimit]); // Do not send the extra item to the view. -- cwells
 		}
-		$this->view->setData(array('Items' => $items,
-									$this->modelType . 'List' => $items,
+		$this->view->setData(array($this->modelType . 'List' => $items,
 									'pageNumber' => $pageNumber,
 									'BackURL' => $backURL,
 									'NextURL' => (empty($morePages) ? '' : "$this->pathInURL/admin/" . ($pageNumber + 1))));
@@ -259,8 +257,7 @@ abstract class DatabaseRecordController extends Controller
 			$morePages = true;
 			unset($items[$this->pageLimit]); // Do not send the extra item to the view. -- cwells
 		}
-		$this->view->setData(array('Items' => $items,
-									$this->modelType . 'List' => $items,
+		$this->view->setData(array($this->modelType . 'List' => $items,
 									'pageNumber' => $pageNumber,
 									'BackURL' => ($pageNumber === 2 ? $this->pathInURL : "$this->pathInURL/page/" . ($pageNumber - 1)),
 									'NextURL' => (empty($morePages) ? '' : "$this->pathInURL/page/" . ($pageNumber + 1))));
@@ -296,7 +293,7 @@ abstract class DatabaseRecordController extends Controller
 		$item = $this->loadObject($itemID);
 		$this->loadView('view');
 		$this->updateMetaInfo('view', $item->toArray());
-		$this->view->setData(array('Item' => $item, $this->modelType => $item));
+		$this->view->setData($this->modelType, $item);
 	}
 
 }
