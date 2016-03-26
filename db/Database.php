@@ -436,7 +436,7 @@ class Database
 			if ($mapping->Relationship === DatabaseMapping::ManyToMany) {
 				// Store this mapping instance in one array and its value (array of IDs) in another. -- cwells
 				$mappingsToUpdate[$property] = $mapping;
-				$mappingValues[$property] = $properties[$property];
+				$mappingValues[$property] = array_filter($properties[$property]); // Remove empty values since they can't reference a DB record. -- cwells
 			}
 //			unset($properties[$property]);
 		}
@@ -470,15 +470,18 @@ class Database
 
 			if ($retVal) {
 				foreach ($mappingsToUpdate as $key => $mapping) {
+					$numberOfRecords = count($mappingValues[$key]);
 					$subvalues = array($properties[$mapping->FromField]); // Start the array with the object's ID. -- cwells
 					foreach ($mappingValues[$key] as $item) { // Append each ID into the array. -- cwells
 						$subvalues[] = (is_subclass_of($item, '\CWA\MVC\Models\DatabaseRecord') ? $item->getID() : $item);
 					}
 
-					// Subtract 1 from the count for the extra '?' being added. -- cwells
-					$sql = 'DELETE FROM `' . $mapping->Table . '` WHERE ' . $mapping->ToField
-							. ' = ? AND ' . $mapping->Submappings[0]->FromField . ' NOT IN ('
-							. str_repeat('?, ', count($mappingValues[$key]) - 1) . '?)';
+					$sql = 'DELETE FROM `' . $mapping->Table . '` WHERE ' . $mapping->ToField . ' = ?';
+					if ($numberOfRecords !== 0) { // Do not delete records that should remain associated. -- cwells
+						// Subtract 1 from the count for the extra '?' being added. -- cwells
+						$sql .= ' AND ' . $mapping->Submappings[0]->FromField . ' NOT IN ('
+								. str_repeat('?, ', $numberOfRecords - 1) . '?)';
+					}
 					$this->logger->debug("SQL: $sql");
 					$this->logger->debug('Values: ' . implode(',', $subvalues));
 
@@ -490,11 +493,11 @@ class Database
 						$this->setLastError($e);
 					}
 
-					if ($retVal) {
+					if ($retVal && $numberOfRecords !== 0) {
 						// Subtract 1 from the count for the extra '(?, ?)' being added. -- cwells
 						$sql = 'INSERT IGNORE INTO `' . $mapping->Table . '` (' . $mapping->ToField
 								. ', ' . $mapping->Submappings[0]->FromField . ') VALUES '
-								. str_repeat('(?, ?), ', count($mappingValues[$key]) - 1) . '(?, ?)';
+								. str_repeat('(?, ?), ', $numberOfRecords - 1) . '(?, ?)';
 						$subvalues = array();
 						foreach ($mappingValues[$key] as $item) {
 							// Save the value of the main object's ID and the mapped object's ID. -- cwells
