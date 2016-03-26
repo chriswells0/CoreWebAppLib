@@ -19,7 +19,7 @@
 namespace CWA\Util;
 
 if (!defined('CWA\Util\LOG_FORMAT')) {
-	define('CWA\Util\LOG_FORMAT', '[%TIMESTAMP] [%LEVEL] [client %CLIENT_IP] %MESSAGE');
+	define('CWA\Util\LOG_FORMAT', '[%TIMESTAMP] [%LEVEL] [client %{REMOTE_ADDR}] %MESSAGE');
 }
 if (!defined('CWA\Util\LOG_LEVEL')) {
 	define('CWA\Util\LOG_LEVEL', 'WARN');
@@ -68,8 +68,18 @@ class Logger {
 		}
 
 		// This allows the variables in \CWA\Util\LOG_FORMAT to be specified in any order or omitted. -- cwells
-		$this->logFormat = str_replace(array('%TIMESTAMP', '%LEVEL', '%CLIENT_IP', '%MESSAGE'),
-										array('%1$s', '%2$s', '%3$s', '%4$s'), \CWA\Util\LOG_FORMAT) . "\n";
+		$this->logFormat = str_replace(array('%TIMESTAMP', '%LEVEL', '%MESSAGE'),
+										array('%1$s', '%2$s', '%3$s'),
+										\CWA\Util\LOG_FORMAT) . "\n";
+
+		// Replace all instances of ${VARNAME} with the value of $_SERVER['VARNAME'] or '-' if it doesn't exist. -- cwells
+		$matches = array();
+		$matchResult = preg_match_all('/%{([^}]+)}/', $this->logFormat, $matches);
+		if ($matchResult !== false && count($matches) === 2) {
+			foreach ($matches[0] as $index => $match) {
+				$this->logFormat = str_replace($match, (isset($_SERVER[$matches[1][$index]]) ? $_SERVER[$matches[1][$index]] : '-'), $this->logFormat);
+			}
+		}
 	}
 
 	/* Destructor: */
@@ -123,9 +133,9 @@ class Logger {
 	public function log($level = '', $message = '', \Exception $throwable = null) {
 		if (is_resource($this->logFile)) {
 			$entryTime = date(\CWA\Util\LOG_TIMESTAMP); // Timestamps will match for the message and exception entries. -- cwells
-			fwrite($this->logFile, sprintf($this->logFormat, $entryTime, $level, $_SERVER['REMOTE_ADDR'], $message));
+			fwrite($this->logFile, sprintf($this->logFormat, $entryTime, $level, $message));
 			if (!is_null($throwable)) {
-				fwrite($this->logFile, sprintf($this->logFormat, $entryTime, $level, $_SERVER['REMOTE_ADDR'], $throwable->__toString()));
+				fwrite($this->logFile, sprintf($this->logFormat, $entryTime, $level, $throwable->__toString()));
 			}
 		}
 	}
