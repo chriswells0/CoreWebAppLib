@@ -84,9 +84,9 @@ class View
 
 	/* Destructor: */
 	public function __destruct() {
-		// ???: Is this correct? -- cwells
-		$obStatus = ob_get_status();
-		if (!isset($obStatus['status']) || $obStatus['status'] !== PHP_OUTPUT_HANDLER_END) ob_end_flush();
+		if (ob_get_length() !== false) {
+			ob_end_flush();
+		}
 	}
 
 
@@ -247,7 +247,9 @@ class View
 			require_once $this->pathToLayout;
 		}
 		$this->performReplacements();
-		ob_flush();
+		if (ob_get_length() !== false) {
+			ob_end_flush();
+		}
 	}
 
 }
