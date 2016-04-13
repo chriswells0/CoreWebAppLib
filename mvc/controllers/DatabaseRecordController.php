@@ -121,8 +121,8 @@ abstract class DatabaseRecordController extends Controller
 			unset($items[$this->indexLimit]);
 		}
 		$this->view->setData(array($this->modelType . 'List' => $items,
-									'BackURL' => '',
-									'NextURL' => (empty($morePages) ? '' : "$this->pathInURL/page/2")));
+									'PreviousPage' => '',
+									'NextPage' => (empty($morePages) ? '' : "$this->pathInURL/page/2")));
 	}
 
 
@@ -161,11 +161,11 @@ abstract class DatabaseRecordController extends Controller
 		$this->loadView('admin');
 		$this->updateMetaInfo('admin', array('PageNumber' => $pageNumber));
 		if ($pageNumber === 1) {
-			$backURL = '';
+			$previousPage = '';
 		} else if ($pageNumber === 2) {
-			$backURL = "$this->pathInURL/admin";
+			$previousPage = "$this->pathInURL/admin";
 		} else {
-			$backURL = "$this->pathInURL/admin/" . ($pageNumber - 1);
+			$previousPage = "$this->pathInURL/admin/" . ($pageNumber - 1);
 		}
 		if (count($items) > $this->adminLimit) {
 			$morePages = true;
@@ -173,8 +173,8 @@ abstract class DatabaseRecordController extends Controller
 		}
 		$this->view->setData(array($this->modelType . 'List' => $items,
 									'pageNumber' => $pageNumber,
-									'BackURL' => $backURL,
-									'NextURL' => (empty($morePages) ? '' : "$this->pathInURL/admin/" . ($pageNumber + 1))));
+									'PreviousPage' => $previousPage,
+									'NextPage' => (empty($morePages) ? '' : "$this->pathInURL/admin/" . ($pageNumber + 1))));
 	}
 
 	public function delete($data) {
@@ -259,8 +259,8 @@ abstract class DatabaseRecordController extends Controller
 		}
 		$this->view->setData(array($this->modelType . 'List' => $items,
 									'pageNumber' => $pageNumber,
-									'BackURL' => ($pageNumber === 2 ? $this->pathInURL : "$this->pathInURL/page/" . ($pageNumber - 1)),
-									'NextURL' => (empty($morePages) ? '' : "$this->pathInURL/page/" . ($pageNumber + 1))));
+									'PreviousPage' => ($pageNumber === 2 ? $this->pathInURL : "$this->pathInURL/page/" . ($pageNumber - 1)),
+									'NextPage' => (empty($morePages) ? '' : "$this->pathInURL/page/" . ($pageNumber + 1))));
 	}
 
 	public function save(array $properties) {
