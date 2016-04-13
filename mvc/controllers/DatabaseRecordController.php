@@ -200,12 +200,8 @@ abstract class DatabaseRecordController extends Controller
 				}
 
 				$this->loadView('add'); // Get a simple view with no item loaded. -- cwells
-				if ($this->view->getFormat() === 'html') {
-					$this->app->redirect($nextURL);
-				} else {
-					$this->view->setStatus('Successfully deleted the specified item.');
-					$this->view->setData('NextURL', $nextURL);
-				}
+				$this->view->setStatus('Successfully deleted the specified item.');
+				$this->view->setData('NextURL', $nextURL);
 			} else {
 				$this->view($itemID);
 				$errorInfo = $this->db->getErrorInfo();
@@ -269,7 +265,9 @@ abstract class DatabaseRecordController extends Controller
 		} else {
 			$class = $this->modelType;
 			if ($this->db->save($class, $properties)) {
-				$this->app->redirect("$this->pathInURL/view/" . $properties[$class::getAlternateKeyName()]);
+				$this->edit($properties);
+				$this->view->setStatus('Successfully saved the specified item.');
+				$this->view->setData('NextURL', "$this->pathInURL/view/" . $properties[$class::getAlternateKeyName()]);
 			} else {
 				if (empty($properties[$class::getPrimaryKeyName()])) {
 					$this->add($properties);

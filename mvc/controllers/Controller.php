@@ -110,6 +110,9 @@ abstract class Controller
 	/* Public methods: */
 
 	public function __showView() {
+		if (!is_null($this->view->getData('NextURL')) && $this->view->getFormat() === 'html') {
+			$this->app->redirect($this->view->getData('NextURL'));
+		}
 		$this->view->setData('ControllerURL', $this->pathInURL);
 		$this->view->setData('CurrentUser', $this->app->getCurrentUser());
 		if ($this->view->getFormat() === 'atom') {
