@@ -89,7 +89,6 @@ abstract class Controller
 
 	protected function loadView($name, $layout = 'default') {
 		$this->view = new View($this->modelType, $name, $this->getTemplate($name), $layout);
-		$this->view->setData('ModelType', $this->modelType);
 		$this->updateMetaInfo($name);
 	}
 
@@ -115,6 +114,7 @@ abstract class Controller
 		}
 		$this->view->setData('ControllerURL', $this->pathInURL);
 		$this->view->setData('CurrentUser', $this->app->getCurrentUser());
+		$this->view->setData('ModelType', $this->modelType);
 		if ($this->view->getFormat() === 'atom') {
 			$items = $this->view->getData($this->modelType . 'List');
 			if (!is_null($items)) {
