@@ -48,7 +48,7 @@ abstract class Controller
 		// If the naming convention does not work well for a given controller, override this constructor,
 		// set $this->modelType in the new constructor, and then call parent::__construct(). -- cwells
 		if (!isset($this->modelType)) {
-			$this->modelType = str_replace('Controller', '', get_class($this));
+			$this->modelType = str_replace('Controller', '', implode('', array_slice(explode('\\', get_class($this)), -1)));
 		}
 
 		// If the naming convention does not work well for a given controller, override this constructor,
