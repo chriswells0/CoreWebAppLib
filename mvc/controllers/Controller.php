@@ -78,8 +78,8 @@ abstract class Controller
 
 	/* Protected methods: */
 
-	protected function getTemplate($method) {
-		return (isset($this->viewInfo[$method]['template']) ? $this->viewInfo[$method]['template'] : $method);
+	protected function getTemplate($viewName) {
+		return (isset($this->viewInfo[$viewName]['template']) ? $this->viewInfo[$viewName]['template'] : null);
 	}
 
 	// Make public in a subclass to enable this method. -- cwells
@@ -87,22 +87,22 @@ abstract class Controller
 		$this->loadView('index');
 	}
 
-	protected function loadView($method, $layout = 'default') {
-		$this->view = new View($this->modelType, $this->getTemplate($method), $layout);
+	protected function loadView($name, $layout = 'default') {
+		$this->view = new View($this->modelType, $name, $this->getTemplate($name), $layout);
 		$this->view->setData('ModelType', $this->modelType);
-		$this->updateMetaInfo($method);
+		$this->updateMetaInfo($name);
 	}
 
-	protected function updateMetaInfo($method, $properties = array()) {
+	protected function updateMetaInfo($viewName, $properties = array()) {
 		// ???: Should the view define and set its own title and description?
-		if (isset($this->viewInfo[$method]['title'])) {
-			$this->view->setTitle($this->replaceStrings($this->viewInfo[$method]['title'], $properties));
+		if (isset($this->viewInfo[$viewName]['title'])) {
+			$this->view->setTitle($this->replaceStrings($this->viewInfo[$viewName]['title'], $properties));
 		}
-		if (isset($this->viewInfo[$method]['description'])) {
-			$this->view->setDescription($this->replaceStrings($this->viewInfo[$method]['description'], $properties));
+		if (isset($this->viewInfo[$viewName]['description'])) {
+			$this->view->setDescription($this->replaceStrings($this->viewInfo[$viewName]['description'], $properties));
 		}
-		if (isset($this->viewInfo[$method]['canonicalURL'])) {
-			$this->view->setCanonicalURL($this->replaceStrings($this->viewInfo[$method]['canonicalURL'], $properties));
+		if (isset($this->viewInfo[$viewName]['canonicalURL'])) {
+			$this->view->setCanonicalURL($this->replaceStrings($this->viewInfo[$viewName]['canonicalURL'], $properties));
 		}
 	}
 

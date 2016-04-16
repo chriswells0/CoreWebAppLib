@@ -41,8 +41,7 @@ class ErrorController extends Controller
 	public function view($statusCode, $statusMessage = '') {
 		if (empty($statusCode) || !is_numeric($statusCode)) $statusCode = '0';
 		$this->logger->fatal("In ErrorController::view($statusCode): " . $_SERVER['REQUEST_URI'] . " - $statusMessage");
-		$this->view = new ErrorView($this->modelType, $this->getTemplate('view'));
-		$this->updateMetaInfo('view');
+		$this->view = new ErrorView($this->modelType, 'view');
 		$this->view->setStatus($statusMessage, $statusCode);
 	}
 

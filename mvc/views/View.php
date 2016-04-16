@@ -48,6 +48,7 @@ class View
 	protected $format;
 	protected $isPartial;
 	protected $logger;
+	protected $name;
 	protected $pathToLayout;
 	protected $pathToPartial;
 	protected $statusCode;
@@ -57,7 +58,7 @@ class View
 
 
 	/* Constructor: */
-	public function __construct($modelType, $template, $layout = 'default') {
+	public function __construct($modelType, $name, $template = null, $layout = 'default') {
 		$this->logger = $GLOBALS['app']->getLogger(\CWA\Util\LOG_NAME);
 		// Remove the namespace from the modelType if present. -- cwells
 		$lastSlash = strrpos($modelType, '\\');
@@ -68,10 +69,14 @@ class View
 			$this->supportedFormats = array('html', 'json', 'atom');
 		}
 		$this->detectFormat();
+		$this->name = $name;
 		$this->pathToLayout = "views/_layouts/$layout.$this->format.php";
 		$this->isPartial = (isset($_GET['partial']) && $_GET['partial'] === 'true');
 		if (!$this->isPartial && !file_exists($this->pathToLayout)) {
 			throw new FileNotFoundException("Layout not found: $this->pathToLayout", 404);
+		}
+		if (is_null($template)) {
+			$template = $this->name;
 		}
 		$this->pathToPartial = "views/$modelType/$template.$this->format.php";
 		if ($this->format !== 'json' && !file_exists($this->pathToPartial)) { // The partial is required for both the full and partial HTML views. -- cwells
@@ -192,6 +197,10 @@ class View
 
 	public function getFormat() {
 		return $this->format;
+	}
+
+	public function getName() {
+		return $this->name;
 	}
 
 	public function getStatusCode() {
