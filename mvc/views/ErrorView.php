@@ -27,7 +27,7 @@ class ErrorView extends View
 	protected function detectFormat() {
 		parent::detectFormat();
 		// Prevent recursive "partial not found" errors. -- cwells
-		if (!file_exists("views/Error/default.$this->format.php")) {
+		if ($this->format !== 'json' && !file_exists("views/Error/view.$this->format.php")) {
 			$this->format = 'html';
 		}
 	}
