@@ -54,7 +54,7 @@ abstract class Controller
 		// If the naming convention does not work well for a given controller, override this constructor,
 		// set $this->pathInURL in the new constructor, and then call parent::__construct(). -- cwells
 		if (!isset($this->pathInURL)) {
-			$this->pathInURL = \CWA\APP_ROOT . strtolower($this->modelType);
+			$this->pathInURL = \CWA\APP_ROOT . $this->app->getControllerName();
 		}
 
 		$modelFilePath = "models/$this->modelType.php";

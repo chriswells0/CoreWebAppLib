@@ -204,6 +204,10 @@ abstract class WebApp
 		}
 	}
 
+	public function getControllerName() {
+		return $this->controllerName;
+	}
+
 	public function getControllers() {
 		return $this->controllers;
 	}
