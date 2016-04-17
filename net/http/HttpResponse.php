@@ -61,7 +61,7 @@ class HttpResponse
 
 	public static function setContentDisposition($filename, $inline = false) {
 		if (empty($filename)) return false;
-		header('Content-Disposition: ' . ($inline ? 'inline' : 'attachment') . "; filename=\"$filename\"");
+		header('Content-Disposition: ' . ($inline ? 'inline' : 'attachment') . '; filename="' . str_replace('"', '\"', $filename) . '"');
 		return true;
 	}
 
