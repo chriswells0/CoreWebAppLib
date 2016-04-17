@@ -131,7 +131,6 @@ abstract class DatabaseRecordController extends Controller
 	public function add($properties = null) {
 		$item = new $this->modelType($properties);
 		$this->loadView('add');
-		$this->updateMetaInfo('add');
 		$this->view->setData($this->modelType, $item);
 	}
 
@@ -159,7 +158,6 @@ abstract class DatabaseRecordController extends Controller
 		}
 
 		$this->loadView('admin');
-		$this->updateMetaInfo('admin', array('PageNumber' => $pageNumber));
 		if ($pageNumber === 1) {
 			$previousPage = '';
 		} else if ($pageNumber === 2) {
@@ -172,7 +170,7 @@ abstract class DatabaseRecordController extends Controller
 			unset($items[$this->adminLimit]); // Do not send the extra item to the view. -- cwells
 		}
 		$this->view->setData(array($this->modelType . 'List' => $items,
-									'pageNumber' => $pageNumber,
+									'PageNumber' => $pageNumber,
 									'PreviousPage' => $previousPage,
 									'NextPage' => (empty($morePages) ? '' : "$this->pathInURL/admin/" . ($pageNumber + 1))));
 	}
@@ -220,7 +218,6 @@ abstract class DatabaseRecordController extends Controller
 		}
 		$item = $this->loadObject($itemID);
 		$this->loadView('edit');
-		$this->updateMetaInfo('edit', $item->toArray());
 		$this->view->setData($this->modelType, $item);
 	}
 
@@ -248,13 +245,12 @@ abstract class DatabaseRecordController extends Controller
 		}
 
 		$this->loadView('page');
-		$this->updateMetaInfo('page', array('PageNumber' => $pageNumber));
 		if (count($items) > $this->pageLimit) {
 			$morePages = true;
 			unset($items[$this->pageLimit]); // Do not send the extra item to the view. -- cwells
 		}
 		$this->view->setData(array($this->modelType . 'List' => $items,
-									'pageNumber' => $pageNumber,
+									'PageNumber' => $pageNumber,
 									'PreviousPage' => ($pageNumber === 2 ? $this->pathInURL : "$this->pathInURL/page/" . ($pageNumber - 1)),
 									'NextPage' => (empty($morePages) ? '' : "$this->pathInURL/page/" . ($pageNumber + 1))));
 	}
@@ -290,7 +286,6 @@ abstract class DatabaseRecordController extends Controller
 		}
 		$item = $this->loadObject($itemID);
 		$this->loadView('view');
-		$this->updateMetaInfo('view', $item->toArray());
 		$this->view->setData($this->modelType, $item);
 	}
 
