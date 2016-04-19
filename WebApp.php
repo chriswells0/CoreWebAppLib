@@ -40,6 +40,10 @@ if (!defined('CWA\LIB_PATH')) {
 		define('CWA\LIB_PATH', '../lib/');
 	}
 }
+// Each controller that needs storage should create a subdirectory in this directory. -- cwells
+if (!defined('CWA\STORAGE_PATH')) {
+	define('CWA\STORAGE_PATH', '../storage');
+}
 
 require_once \CWA\LIB_PATH . 'cwa/mvc/controllers/BadMethodCallException.php';
 require_once \CWA\LIB_PATH . 'cwa/mvc/models/User.php';
