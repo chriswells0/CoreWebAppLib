@@ -182,46 +182,6 @@ class Database
 		}
 	}
 
-	public function loadMapping(DatabaseRecord $instance, $property, DatabaseMapping $mapping) {
-		$retVal = false;
-		try {
-//			$this->logger->trace("FromField starts as $mapping->FromField");
-//			$mapping->FromField = $instance->{$mapping->FromField}; // Update FromField to use the value in the instance's property. -- cwells
-			$sql = "SELECT `$mapping->ObjectType`.* FROM `$mapping->Table`";
-			$where = " WHERE :FromField = $mapping->ToField";
-			$submappings = $mapping->Submappings;
-			if (isset($submappings)) {
-				foreach ($submappings as $submapping) {
-					$sql .= ", `$submapping->Table`";
-					$where .= " AND $submapping->FromField = $submapping->ToField";
-				}
-			}
-			$statement = $this->handle->prepare($sql . $where);
-			$properties = array('FromField' => $instance->{$mapping->FromField});
-			$this->logger->debug("SQL: $sql$where");
-			$this->logger->debug('Values: ' . implode(',', $properties));
-			$statement->setFetchMode(PDO::FETCH_ASSOC);
-			if ($statement->execute($properties)) {
-				if ($mapping->Relationship === DatabaseMapping::OneToOne || $mapping->Relationship === DatabaseMapping::ManyToOne) {
-					$record = $statement->fetch();
-					if ($record !== false) {
-						$instance->{$property} = new $mapping->ObjectType($record);
-					}
-				} else {
-					$results = array();
-					while ($record = $statement->fetch()) {
-						$results[] = new $mapping->ObjectType($record);
-					}
-					$instance->{$property} = $results;
-				}
-				$retVal = true;
-			}
-		} catch (PDOException $e) {
-			$this->setLastError($e);
-		}
-		return $retVal;
-	}
-
 	public function insert($class, array &$properties) {
 		if (!is_subclass_of($class, '\CWA\MVC\Models\DatabaseRecord') || !is_array($properties)) return false;
 
@@ -320,6 +280,46 @@ class Database
 		$retVal = false;
 		try {
 			$retVal = $this->handle->inTransaction();
+		} catch (PDOException $e) {
+			$this->setLastError($e);
+		}
+		return $retVal;
+	}
+
+	public function loadMapping(DatabaseRecord $instance, $property, DatabaseMapping $mapping) {
+		$retVal = false;
+		try {
+//			$this->logger->trace("FromField starts as $mapping->FromField");
+//			$mapping->FromField = $instance->{$mapping->FromField}; // Update FromField to use the value in the instance's property. -- cwells
+			$sql = "SELECT `$mapping->ObjectType`.* FROM `$mapping->Table`";
+			$where = " WHERE :FromField = $mapping->ToField";
+			$submappings = $mapping->Submappings;
+			if (isset($submappings)) {
+				foreach ($submappings as $submapping) {
+					$sql .= ", `$submapping->Table`";
+					$where .= " AND $submapping->FromField = $submapping->ToField";
+				}
+			}
+			$statement = $this->handle->prepare($sql . $where);
+			$properties = array('FromField' => $instance->{$mapping->FromField});
+			$this->logger->debug("SQL: $sql$where");
+			$this->logger->debug('Values: ' . implode(',', $properties));
+			$statement->setFetchMode(PDO::FETCH_ASSOC);
+			if ($statement->execute($properties)) {
+				if ($mapping->Relationship === DatabaseMapping::OneToOne || $mapping->Relationship === DatabaseMapping::ManyToOne) {
+					$record = $statement->fetch();
+					if ($record !== false) {
+						$instance->{$property} = new $mapping->ObjectType($record);
+					}
+				} else {
+					$results = array();
+					while ($record = $statement->fetch()) {
+						$results[] = new $mapping->ObjectType($record);
+					}
+					$instance->{$property} = $results;
+				}
+				$retVal = true;
+			}
 		} catch (PDOException $e) {
 			$this->setLastError($e);
 		}
