@@ -91,21 +91,6 @@ abstract class DatabaseRecordController extends Controller
 	}
 
 
-	/* Private methods: */
-
-	private function loadObject($itemID = null) {
-		if (empty($itemID) || is_array($itemID)) {
-			$item = new $this->modelType($itemID);
-		} else {
-			$item = $this->db->select($this->modelType, $itemID);
-			if (is_null($item)) {
-				throw new InvalidArgumentException("Failed to retrieve $this->modelType with key = $itemID.", 404);
-			}
-		}
-		return $item;
-	}
-
-
 	/* Protected methods: */
 
 	// Make public in a subclass to enable this method. -- cwells
@@ -123,6 +108,18 @@ abstract class DatabaseRecordController extends Controller
 		$this->view->setData(array($this->modelType . 'List' => $items,
 									'PreviousPage' => '',
 									'NextPage' => (empty($morePages) ? '' : "$this->pathInURL/page/2")));
+	}
+
+	protected function loadObject($itemID = null) {
+		if (empty($itemID) || is_array($itemID)) {
+			$item = new $this->modelType($itemID);
+		} else {
+			$item = $this->db->select($this->modelType, $itemID);
+			if (is_null($item)) {
+				throw new InvalidArgumentException("Failed to retrieve $this->modelType with key = $itemID.", 404);
+			}
+		}
+		return $item;
 	}
 
 
