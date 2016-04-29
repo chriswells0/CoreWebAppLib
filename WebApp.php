@@ -50,6 +50,7 @@ require_once \CWA\LIB_PATH . 'cwa/util/Logger.php';
 abstract class WebApp
 {
 	/* Protected variables: */
+	protected $authorizedRoleCache;
 	protected $controller;
 	protected $controllerAttributes;
 	protected $controllerName;
@@ -180,6 +181,10 @@ abstract class WebApp
 		if (is_null($method)) {
 			$method = $this->method;
 		}
+		if (isset($this->authorizedRoleCache[$controller]) && isset($this->authorizedRoleCache[$controller][$method])) {
+			return $this->authorizedRoleCache[$controller][$method];
+		}
+
 		$authorizedRoles = null;
 		if (isset($this->controllers['__GLOBAL__'])
 			&& !empty($this->controllers['__GLOBAL__']['authorizedRoles'])
@@ -197,11 +202,9 @@ abstract class WebApp
 				$authorizedRoles = array_merge($authorizedRoles, $this->controllers[$controller]['authorizedRoles'][$method]);
 			}
 		}
-		if (is_null($authorizedRoles)) {
-			return null;
-		} else {
-			return array_unique($authorizedRoles);
-		}
+
+		$this->authorizedRoleCache[$controller][$method] = (is_null($authorizedRoles) ? null : array_unique($authorizedRoles));
+		return $this->authorizedRoleCache[$controller][$method];
 	}
 
 	public function getControllerName() {
