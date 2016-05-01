@@ -18,11 +18,11 @@
 
 namespace CWA\MVC\Views;
 
-use \CWA\Net\HTTP\FileNotFoundException;
+use \CWA\IO\FileNotFoundException;
 use \CWA\Net\HTTP\HttpResponse;
 use \CWA\Util\Logger;
 
-require_once \CWA\LIB_PATH . 'cwa/net/http/FileNotFoundException.php';
+require_once \CWA\LIB_PATH . 'cwa/io/FileNotFoundException.php';
 require_once \CWA\LIB_PATH . 'cwa/net/http/HttpResponse.php';
 require_once \CWA\LIB_PATH . 'cwa/util/Logger.php';
 

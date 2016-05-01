@@ -16,8 +16,12 @@
  *
  */
 
-namespace CWA\Net\HTTP;
+namespace CWA\IO;
 
-interface Exception {}
+require_once \CWA\LIB_PATH . 'cwa/io/Exception.php';
+
+class FileNotFoundException extends \InvalidArgumentException implements \CWA\IO\Exception
+{
+}
 
 ?>

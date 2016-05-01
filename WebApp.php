@@ -19,11 +19,11 @@
 namespace CWA;
 
 use \CWA\DB\DatabaseException;
+use \CWA\IO\FileNotFoundException;
 use \CWA\MVC\Controllers\BadMethodCallException;
 use \CWA\MVC\Controllers\ErrorController;
 use \CWA\MVC\Controllers\InvalidArgumentException;
 use \CWA\MVC\Models\User;
-use \CWA\Net\HTTP\FileNotFoundException;
 use \CWA\Net\HTTP\HttpResponse;
 
 // ENT_HTML5 and ENT_SUBSTITUTE are not defined until PHP 5.4. -- cwells
@@ -41,9 +41,9 @@ if (!defined('CWA\LIB_PATH')) {
 	}
 }
 
+require_once \CWA\LIB_PATH . 'cwa/io/FileNotFoundException.php';
 require_once \CWA\LIB_PATH . 'cwa/mvc/controllers/BadMethodCallException.php';
 require_once \CWA\LIB_PATH . 'cwa/mvc/models/User.php';
-require_once \CWA\LIB_PATH . 'cwa/net/http/FileNotFoundException.php';
 require_once \CWA\LIB_PATH . 'cwa/net/http/HttpResponse.php';
 require_once \CWA\LIB_PATH . 'cwa/util/Logger.php';
 
