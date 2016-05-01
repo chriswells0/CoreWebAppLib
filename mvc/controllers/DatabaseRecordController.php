@@ -252,7 +252,7 @@ abstract class DatabaseRecordController extends Controller
 									'NextPage' => (empty($morePages) ? '' : "$this->pathInURL/page/" . ($pageNumber + 1))));
 	}
 
-	public function save(array $properties) {
+	public function save(array &$properties) {
 		if (empty($properties)) {
 			throw new InvalidArgumentException('You must provide the values to update.', 400);
 		} else {
