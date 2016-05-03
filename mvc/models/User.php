@@ -30,8 +30,17 @@ class User extends DatabaseRecord
 
 	/* Protected variables: */
 
-	protected $cachedRoles = array();
+	protected $roleTypes = array();
 	protected $loggedIn = false;
+
+
+	/* Constructor: */
+	public function __construct(array $properties = null, $loadMappings = DatabaseRecord::MAPPINGS_NO_LAZY) {
+		parent::__construct($properties, $loadMappings);
+		foreach ($this->Roles as $role) {
+			$this->roleTypes[] = $role->Type;
+		}
+	}
 
 
 	/* Public methods: */
@@ -42,23 +51,15 @@ class User extends DatabaseRecord
 		}
 
 		if (!is_array($desiredRoles)) {
-			$desiredRoles = str_split($desiredRoles, strlen($desiredRoles));
+			return in_array($desiredRoles, $this->roleTypes);
 		}
 
 		foreach ($desiredRoles as $desiredRole) {
-			if (isset($this->cachedRoles[$desiredRole])) {
-				return $this->cachedRoles[$desiredRole];
+			if (in_array($desiredRole, $this->roleTypes)) {
+				return true;
 			}
-
-			foreach ($this->Roles as $role) {
-				if ($role->Type === $desiredRole) {
-					$this->cachedRoles[$desiredRole] = true;
-					return true;
-				}
-			}
-			$this->cachedRoles[$desiredRole] = false;
 		}
-		return $this->cachedRoles[$desiredRole];
+		return false;
 	}
 
 	public function isLoggedIn() {
