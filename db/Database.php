@@ -204,7 +204,7 @@ class Database
 			if ($mapping->Relationship === DatabaseMapping::ManyToMany) {
 				// Store this mapping instance in one array and its value (array of IDs) in another. -- cwells
 				$mappingsToUpdate[$property] = $mapping;
-				$mappingValues[$property] = $properties[$property];
+				$mappingValues[$property] = array_filter($properties[$property]); // Remove empty values since they can't reference a DB record. -- cwells
 			}
 //			unset($properties[$property]);
 		}
@@ -237,6 +237,9 @@ class Database
 				$properties[$primaryKey] = $this->handle->lastInsertId();
 
 				foreach ($mappingsToUpdate as $key => $mapping) {
+					if (count($mappingValues[$key]) === 0) {
+						continue; // No items for this mapping. -- cwells
+					}
 					// Subtract 1 from the count for the extra '(?, ?)' being added. -- cwells
 					$sql = 'INSERT IGNORE INTO `' . $mapping->Table . '` (' . $mapping->ToField
 							. ', ' . $mapping->Submappings[0]->FromField . ') VALUES '
