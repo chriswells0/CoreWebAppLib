@@ -150,7 +150,7 @@ abstract class DatabaseRecordController extends Controller
 		$items = $this->db->selectAll($this->modelType, "ORDER BY $this->adminSort LIMIT $begin, $limit");
 		if (is_null($items)) {
 			throw new DatabaseException("Failed to retrieve $this->modelType objects.", 500);
-		} else if (count($items) === 0) {
+		} else if (count($items) === 0 && $pageNumber !== 1) {
 			throw new InvalidArgumentException('No items were found for the specified page number.', 404);
 		}
 
