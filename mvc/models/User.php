@@ -37,8 +37,10 @@ class User extends DatabaseRecord
 	/* Constructor: */
 	public function __construct(array $properties = null, $loadMappings = DatabaseRecord::MAPPINGS_NO_LAZY) {
 		parent::__construct($properties, $loadMappings);
-		foreach ($this->Roles as $role) {
-			$this->roleTypes[] = $role->Type;
+		if (is_array($this->Roles)) {
+			foreach ($this->Roles as $role) {
+				$this->roleTypes[] = $role->Type;
+			}
 		}
 	}
 
