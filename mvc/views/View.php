@@ -215,6 +215,10 @@ class View
 		return $this->sanitize($this->title);
 	}
 
+	public function isPartial() {
+		return $this->isPartial;
+	}
+
 	public function setCanonicalURL($canonicalURL) {
 		$this->canonicalURL = is_null($canonicalURL) ? $canonicalURL : strtolower($canonicalURL);
 	}
