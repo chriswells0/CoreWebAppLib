@@ -66,15 +66,6 @@ abstract class Controller
 
 	/* Private methods: */
 
-	// ???: Move to a Util class? -- cwells
-	private function replaceStrings($string, $replacements, $beginDelimiter = '{', $endDelimiter = '}') {
-		if (strlen($string) === 0 || strpos($string, $beginDelimiter) === false || strpos($string, $endDelimiter) === false) return $string;
-		foreach ($replacements as $name => $value) {
-			if (is_string($value) || is_numeric($value)) $string = str_replace("$beginDelimiter{$name}$endDelimiter", $value, $string);
-		}
-		return $string;
-	}
-
 
 	/* Protected methods: */
 
@@ -89,6 +80,15 @@ abstract class Controller
 
 	protected function loadView($name, $layout = 'default') {
 		$this->view = new View($this->modelType, $name, $this->getTemplate($name), $layout);
+	}
+
+	// ???: Move to a Util class? -- cwells
+	protected function replaceStrings($string, $replacements, $beginDelimiter = '{', $endDelimiter = '}') {
+		if (strlen($string) === 0 || strpos($string, $beginDelimiter) === false || strpos($string, $endDelimiter) === false) return $string;
+		foreach ($replacements as $name => $value) {
+			if (is_string($value) || is_numeric($value)) $string = str_replace("$beginDelimiter{$name}$endDelimiter", $value, $string);
+		}
+		return $string;
 	}
 
 	protected function updateMetaInfo($properties = array()) {
