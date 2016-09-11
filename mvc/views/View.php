@@ -47,6 +47,7 @@ class View
 	protected $description;
 	protected $format;
 	protected $isPartial;
+	protected $layout;
 	protected $logger;
 	protected $name;
 	protected $pathToLayout;
@@ -68,9 +69,10 @@ class View
 		if (!isset($this->supportedFormats)) {
 			$this->supportedFormats = array('html', 'json', 'atom');
 		}
+		$this->layout = $layout;
 		$this->detectFormat();
 		$this->name = $name;
-		$this->pathToLayout = "views/_layouts/$layout.$this->format.php";
+		$this->pathToLayout = "views/_layouts/$this->layout.$this->format.php";
 		$this->isPartial = (isset($_GET['partial']) && $_GET['partial'] === 'true');
 		if (!$this->isPartial && !file_exists($this->pathToLayout)) {
 			throw new FileNotFoundException("Layout not found: $this->pathToLayout", 404);
@@ -197,6 +199,10 @@ class View
 
 	public function getFormat() {
 		return $this->format;
+	}
+
+	public function getLayout() {
+		return $this->layout;
 	}
 
 	public function getName() {
