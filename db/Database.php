@@ -441,7 +441,7 @@ class Database
 				$mappingsToUpdate[$property] = $mapping;
 				$mappingValues[$property] = array_filter($properties[$property]); // Remove empty values since they can't reference a DB record. -- cwells
 			}
-//			unset($properties[$property]);
+			unset($properties[$property]);
 		}
 
 		$sql = 'UPDATE `' . $class . '` SET';
