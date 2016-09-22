@@ -24,6 +24,7 @@ use \CWA\DB\DatabaseMapping;
 use \CWA\MVC\Models\DatabaseRecord;
 use \CWA\Util\Logger;
 
+require_once \CWA\LIB_PATH . 'cwa/db/DatabaseException.php';
 require_once \CWA\LIB_PATH . 'cwa/db/DatabaseMapping.php';
 require_once \CWA\LIB_PATH . 'cwa/mvc/models/DatabaseRecord.php';
 require_once \CWA\LIB_PATH . 'cwa/util/Logger.php';
