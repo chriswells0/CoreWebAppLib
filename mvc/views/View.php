@@ -170,10 +170,18 @@ class View
 		}
 
 		// Security related headers. -- cwells
-		HttpResponse::setHeader('Content-Security-Policy', \CWA\MVC\VIEWS\HEADERS\CONTENT_SECURITY_POLICY);
-		HttpResponse::setHeader('X-Content-Type-Options', \CWA\MVC\VIEWS\HEADERS\X_CONTENT_TYPE_OPTIONS);
-		HttpResponse::setHeader('X-Frame-Options', \CWA\MVC\VIEWS\HEADERS\X_FRAME_OPTIONS);
-		HttpResponse::setHeader('X-XSS-Protection', \CWA\MVC\VIEWS\HEADERS\X_XSS_PROTECTION);
+		if (!is_null(\CWA\MVC\VIEWS\HEADERS\CONTENT_SECURITY_POLICY)) {
+			HttpResponse::setHeader('Content-Security-Policy', \CWA\MVC\VIEWS\HEADERS\CONTENT_SECURITY_POLICY);
+		}
+		if (!is_null(\CWA\MVC\VIEWS\HEADERS\X_CONTENT_TYPE_OPTIONS)) {
+			HttpResponse::setHeader('X-Content-Type-Options', \CWA\MVC\VIEWS\HEADERS\X_CONTENT_TYPE_OPTIONS);
+		}
+		if (!is_null(\CWA\MVC\VIEWS\HEADERS\X_FRAME_OPTIONS)) {
+			HttpResponse::setHeader('X-Frame-Options', \CWA\MVC\VIEWS\HEADERS\X_FRAME_OPTIONS);
+		}
+		if (!is_null(\CWA\MVC\VIEWS\HEADERS\X_XSS_PROTECTION)) {
+			HttpResponse::setHeader('X-XSS-Protection', \CWA\MVC\VIEWS\HEADERS\X_XSS_PROTECTION);
+		}
 	}
 
 
