@@ -102,35 +102,35 @@ class Logger {
 
 	/* Public methods: */
 
-	public function debug($message, \Exception $throwable = null) {
+	public function debug($message, \Throwable $throwable = null) {
 		if ($this->logLevel >= self::$LEVEL['DEBUG']) {
 			$this->log('DEBUG', $message, $throwable);
 		}
 	}
 
-	public function error($message, \Exception $throwable = null) {
+	public function error($message, \Throwable $throwable = null) {
 		if ($this->logLevel >= self::$LEVEL['ERROR']) {
 			$this->log('ERROR', $message, $throwable);
 		}
 	}
 
-	public function exception(\Exception $throwable) {
+	public function exception(\Throwable $throwable) {
 		$this->error('In exception handler:', $throwable);
 	}
 
-	public function fatal($message, \Exception $throwable = null) {
+	public function fatal($message, \Throwable $throwable = null) {
 		if ($this->logLevel >= self::$LEVEL['FATAL']) {
 			$this->log('FATAL', $message, $throwable);
 		}
 	}
 
-	public function info($message, \Exception $throwable = null) {
+	public function info($message, \Throwable $throwable = null) {
 		if ($this->logLevel >= self::$LEVEL['INFO']) {
 			$this->log('INFO', $message, $throwable);
 		}
 	}
 
-	public function log($level = '', $message = '', \Exception $throwable = null) {
+	public function log($level = '', $message = '', \Throwable $throwable = null) {
 		if (is_resource($this->logFile)) {
 			$entryTime = date(\CWA\Util\LOG_TIMESTAMP); // Timestamps will match for the message and exception entries. -- cwells
 			fwrite($this->logFile, sprintf($this->logFormat, $entryTime, $level, $message));
@@ -148,13 +148,13 @@ class Logger {
 		return true; // Don't execute the internal PHP error handler. -- cwells
 	}
 
-	public function trace($message, \Exception $throwable = null) {
+	public function trace($message, \Throwable $throwable = null) {
 		if ($this->logLevel >= self::$LEVEL['TRACE']) {
 			$this->log('TRACE', $message, $throwable);
 		}
 	}
 
-	public function warn($message, \Exception $throwable = null) {
+	public function warn($message, \Throwable $throwable = null) {
 		if ($this->logLevel >= self::$LEVEL['WARN']) {
 			$this->log('WARN', $message, $throwable);
 		}
