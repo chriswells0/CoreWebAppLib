@@ -133,16 +133,12 @@ class View
 		if ($usage === 'html' || $usage === 'json' || $usage === 'atom' || $usage === 'xml' || $usage === 'js') {
 			if (is_array($values)) {
 				foreach ($values as $key => $value) {
-					if (is_array($value)) {
-						$values[$key] = self::sanitize($value, $usage);
-					} else if (is_string($value)) {
-						$values[$key] = htmlspecialchars($value, ENT_QUOTES | ENT_HTML5 | ENT_SUBSTITUTE, 'UTF-8');
-					} else if (!is_numeric($value) && !is_bool($value)) {
-						$this->logger->debug('Not sanitizing object of type: ' . get_class($value));
-					}
+					$values[$key] = self::sanitize($value, $usage);
 				}
-			} else {
+			} else if (is_string($values)) {
 				$values = htmlspecialchars($values, ENT_QUOTES | ENT_HTML5 | ENT_SUBSTITUTE, 'UTF-8');
+			} else if (!is_numeric($values) && !is_bool($values)) {
+				$this->logger->debug('Not sanitizing object of type: ' . get_class($values));
 			}
 		} else {
 			$values = '';
