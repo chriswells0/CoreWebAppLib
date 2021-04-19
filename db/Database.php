@@ -399,19 +399,34 @@ class Database
 	public function selectRandom($class, $count = 1, $loadMappings = DatabaseRecord::MAPPINGS_NO_LAZY) {
 		if (!is_subclass_of($class, '\CWA\MVC\Models\DatabaseRecord')) return null;
 		$primaryKey = $class::getPrimaryKeyName();
-		$sql = "SELECT `$class`.* FROM `$class` WHERE $primaryKey >= (SELECT FLOOR(MAX($primaryKey) * RAND()) FROM `$class`) ORDER BY $primaryKey LIMIT 1";
-		$this->logger->debug("SQL: $sql");
 
 		$retVal = null;
 		try {
+			$sql = "SELECT MIN($primaryKey) as min, MAX($primaryKey) as max FROM `$class`;";
 			$this->statement = null;
 			$statement = $this->handle->prepare($sql);
 			$statement->setFetchMode(PDO::FETCH_ASSOC);
 			if ($statement->execute()) {
 				$record = $statement->fetch();
 				if ($record !== false) {
-					$class::setMappingLoader(array($this, 'loadMapping'));
-					$retVal = new $class($record, $loadMappings);
+					if ($count === 1) {
+						$range = $record['max'];
+						$sql = "SELECT a.* FROM `$class` a JOIN (SELECT $primaryKey FROM (SELECT $primaryKey FROM (SELECT $range * RAND() AS start FROM DUAL) AS init JOIN `$class` y WHERE y.$primaryKey > init.start ORDER BY y.$primaryKey LIMIT 1) z) r ON a.$primaryKey = r.$primaryKey";
+					} else {
+						$range = $record['min'] + ($record['max'] - $record['min'] + 1 - (2 * $count));
+						$subrecords = 2 * $count;
+						$sql = "SELECT a.* FROM `$class` a JOIN (SELECT $primaryKey FROM (SELECT $primaryKey FROM (SELECT $range * RAND() AS start FROM DUAL) AS init JOIN `$class` y WHERE y.$primaryKey > init.start ORDER BY y.$primaryKey LIMIT $subrecords) z ORDER BY RAND() LIMIT $count) r ON a.$primaryKey = r.$primaryKey";
+					}
+					$this->logger->debug("SQL: $sql");
+					$statement = $this->handle->prepare($sql);
+					$statement->setFetchMode(PDO::FETCH_ASSOC);
+					if ($statement->execute()) {
+						$record = $statement->fetch();
+						if ($record !== false) {
+							$class::setMappingLoader(array($this, 'loadMapping'));
+							$retVal = new $class($record, $loadMappings);
+						}
+					}
 				}
 			}
 		} catch (PDOException $e) {
